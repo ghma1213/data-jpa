@@ -274,4 +274,24 @@ class MemberRepositoryTest {
     public void callCustom() {
         List<Member> result = memberRepository.findMemberCustom();
     }
+
+    @Test
+    public void projections() {
+        Team teamA = new Team("teamA");
+        teamRepository.save(teamA);
+        Member member1 = new Member("m1", 10, teamA);
+        Member member2 = new Member("m2", 20, teamA);
+
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        em.flush();
+        em.clear();
+
+        List<NestedClosedProjections> result = memberRepository.findProjectionsByUsername("m1", NestedClosedProjections.class);
+
+        for (NestedClosedProjections usernameOnly : result) {
+            System.out.println("usernameOnly = " + usernameOnly);
+        }
+    }
 }
